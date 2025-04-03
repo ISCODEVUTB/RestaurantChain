@@ -10,7 +10,8 @@ productos = {
     "ProductName": "Hamburguesa sencilla",
     "Price": 12000,
     "Desc": "Hamburguesa sencilla con lechuga y tomate",
-    "Points": 12
+    "Points": 12,
+    "available": "si" 
 }
 
 resultado = menu.insert_one(productos)
