@@ -1,7 +1,7 @@
 from pymongo import MongoClient
 from bson import ObjectId
 from datetime import datetime
-pne="pedido no encontrado"
+pne = "pedido no encontrado"
 
 uri = "mongodb+srv://mareyes:Mateo123@restaurantchaindb.5obzjql.mongodb.net/?retryWrites=true&w=majority&appName=RestaurantChainDBy"
 client = MongoClient(uri)
