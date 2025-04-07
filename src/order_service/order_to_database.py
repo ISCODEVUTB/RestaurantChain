@@ -1,43 +1,67 @@
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from typing import List
 from pymongo import MongoClient
 from bson import ObjectId
 from datetime import datetime
-pne="pedido no encontrado"
-
+pne= "pedido no encontrado"
 uri = "mongodb+srv://mareyes:Mateo123@restaurantchaindb.5obzjql.mongodb.net/?retryWrites=true&w=majority&appName=RestaurantChainDBy"
 client = MongoClient(uri)
 db = client["Restaurant"]
 orders = db["Orders"]
 
-#Crear un Pedido
-def create_order(customer_name, items, total_price, status="Pendiente"):
-    order = {
-        "customer_name": customer_name,
-        "items": items,  # Lista de productos en el pedido
-        "total_price": total_price,
-        "status": status,
-        "order_date": datetime.utcnow()
-    }
-    result = orders.insert_one(order)
-    return f"Pedido creado con ID: {result.inserted_id}"
+app = FastAPI()
 
-#Obtener un Pedido por ID
-def get_order_by_id(order_id):
-    try:
-        order = orders.find_one({"_id": ObjectId(order_id)})
-        return order if order else " Pedido no encontrado"
-    except Exception as e:
-        return f" Error: {e}"
+class Item(BaseModel):
+    ProductName: str
+    Price: float
+    Quantity: int
+    Aviable: str
 
-#Obtener Todos los Pedidos
+class Order(BaseModel):
+    customer_name: str
+    items: List[Item]
+    total_price: float
+    status: str = "Pendiente"
+
+
+# Endpoint: Crear pedido
+@app.post("/orders")
+def create_order(order: Order):
+    data = order.dict()
+    data["order_date"] = datetime.utcnow()
+    result = orders.insert_one(data)
+    return {"message": "Pedido creado", "order_id": str(result.inserted_id)}
+
+# Endpoint: Obtener todos los pedidos
+@app.get("/orders")
 def get_all_orders():
-    return list(orders.find({}, {"_id": 0}))
+    all_orders = list(orders.find())
+    for order in all_orders:
+        order["_id"] = str(order["_id"])
+    return all_orders
 
-#Actualizar el Estado de un Pedido(por id)
-def update_order_status(order_id, new_status):
-    result = orders.update_one({"_id": ObjectId(order_id)}, {"$set": {"status": new_status}})
-    return " Pedido actualizado" if result.modified_count > 0 else "Pedido no encontrado"
+# Endpoint: Obtener pedido por ID
+@app.get("/orders/{order_id}")
+def get_order(order_id: str):
+    order = orders.find_one({"_id": ObjectId(order_id)})
+    if order:
+        order["_id"] = str(order["_id"])
+        return order
+    raise HTTPException(status_code=404, detail= pne)
 
-#Eliminar un Pedido(usar la id)
-def delete_order(order_id):   
+# Endpoint: Actualizar estado del pedido
+@app.put("/orders/{order_id}")
+def update_order_status(order_id: str, status: str):
+    result = orders.update_one({"_id": ObjectId(order_id)}, {"$set": {"status": status}})
+    if result.modified_count:
+        return {"message": "Pedido actualizado"}
+    raise HTTPException(status_code=404, detail= pne)
+
+# Endpoint: Eliminar pedido
+@app.delete("/orders/{order_id}")
+def delete_order(order_id: str):
     result = orders.delete_one({"_id": ObjectId(order_id)})
-    return " Pedido eliminado" if result.deleted_count > 0 else "Pedido no encontrado"
+    if result.deleted_count:
+        return {"message": "Pedido eliminado"}
+    raise HTTPException(status_code=404, detail= pne)
