@@ -1,8 +1,11 @@
 from pymongo import MongoClient
 
 # Conexión a MongoDB
-client = MongoClient("mongodb+srv://mareyes:Mateo123@restaurantchaindb.5obzjql.mongodb.net/?retryWrites=true&w=majority&appName=RestaurantChainDBy")
-db = client["Restaurant"] 
+client = MongoClient(
+    "mongodb+srv://mareyes:Mateo123@restaurantchaindb.5obzjql.mongodb.net/"
+    "?retryWrites=true&w=majority&appName=RestaurantChainDBy"
+)
+db = client["Restaurant"]
 menu = db["Menu"]
 
 
@@ -34,14 +37,25 @@ def update_product():
         return
     op = 0
     while op not in ["1", "2", "3", "4", "5", "6"]:
-        op = input("¿Qué deseas editar? \n1. Nombre \n2. Descripción \n3. Precio \n4. Valor en puntos \n5. Disponibilidad \n6. Salir\nIngrese la opción: ")
+        op = input(
+            "¿Qué deseas editar? \n"
+            "1. Nombre \n"
+            "2. Descripción \n"
+            "3. Precio \n"
+            "4. Valor en puntos \n"
+            "5. Disponibilidad \n"
+            "6. Salir\n"
+            "Ingrese la opción: "
+        )
         if op == "1":
             new_name = input("Nuevo nombre: ")
             menu.update_one({"Name": name}, {"$set": {"Name": new_name}})
             print(edp)
         elif op == "2":
             new_desc = input("Nueva descripción: ")
-            menu.update_one({"Name": name}, {"$set": {"Description": new_desc}})
+            menu.update_one(
+                {"Name": name}, {"$set": {"Description": new_desc}}
+            )
             print(edp)
         elif op == "3":
             new_price = float(input("Nuevo precio: "))
@@ -54,11 +68,17 @@ def update_product():
             print(edp)
         elif op == "4":
             new_points = float(input("Nuevo valor en puntos: "))
-            menu.update_one({"Name": name}, {"$set": {"Points Price": new_points}})
+            menu.update_one(
+                {"Name": name},
+                {"$set": {"Points Price": new_points}}
+            )
             print(edp)
         elif op == "5":
             new_availability = input("¿Disponible? (Si/No): ")
-            menu.update_one({"Name": name}, {"$set": {"Aviability": new_availability}})
+            menu.update_one(
+                {"Name": name},
+                {"$set": {"Aviability": new_availability}}
+            )
             print(edp)
         elif op == "6":
             print("Saliendo de la edición.")
