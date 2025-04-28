@@ -10,12 +10,17 @@ app = FastAPI()
 
 MONGODB_URL = "mongodb+srv://mareyes:Mateo123@restaurantchaindb.5obzjql.mongodb.net/?retryWrites=true&w=majority&appName=RestaurantChainDBy"
 client = AsyncIOMotorClient(MONGODB_URL)
-db = client["Restaurant"] 
+db = client["Restaurant"]
 payment_methods = db["payment_methods"]
 
 @app.get("/")
 async def root():
     return {"message": "Bienvenido a la API"}
+
+def str_id(id):
+    if isinstance(id, ObjectId):
+        return str(id)
+    return id
 
 class PyObjectId(ObjectId):
     @classmethod
@@ -41,9 +46,8 @@ class PaymentMethod(BaseModel):
     created_at: datetime
     updated_at: datetime
 
-class Config:
-    json_encoders = {ObjectId: str}
-    validate_by_name = True
+    class Config:
+        json_encoders = {ObjectId: str_id} 
 
 @app.post("/payment-methods", response_model=PaymentMethod)
 async def create_payment_method(payment_method: PaymentMethodCreate):
