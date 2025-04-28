@@ -22,6 +22,9 @@ def str_id(id):
         return str(id)
     return id
 
+from pydantic import GetJsonSchemaHandler
+from pydantic.json_schema import JsonSchemaValue
+
 class PyObjectId(ObjectId):
     @classmethod
     def __get_validators__(cls):
@@ -32,6 +35,10 @@ class PyObjectId(ObjectId):
         if not ObjectId.is_valid(v):
             raise ValueError("Id Invalida")
         return ObjectId(v)
+
+    @classmethod
+    def __get_pydantic_json_schema__(cls, schema: JsonSchemaValue, handler: GetJsonSchemaHandler) -> JsonSchemaValue:
+        return {"type": "string"}
 
 class PaymentMethodCreate(BaseModel):
     name: str
@@ -46,8 +53,19 @@ class PaymentMethod(BaseModel):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        json_encoders = {ObjectId: str_id} 
+class Config:
+    allow_population_by_field_name = True
+    arbitrary_types_allowed = True
+    json_encoders = {ObjectId: str}
+    schema_extra = {
+        "example": {
+            "name": "Tarjeta de crédito",
+            "description": "Pago mediante tarjeta de crédito",
+            "is_active": True,
+            "created_at": "2024-04-28T12:00:00",
+            "updated_at": "2024-04-28T12:00:00"
+        }
+    }
 
 @app.post("/payment-methods", response_model=PaymentMethod)
 async def create_payment_method(payment_method: PaymentMethodCreate):
