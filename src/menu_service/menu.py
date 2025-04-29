@@ -148,4 +148,5 @@ def mostrar_menu_desarrollador():
             print("Opción inválida.")
 
 
-mostrar_menu_desarrollador()
+if __name__ == "__main__":
+    mostrar_menu_desarrollador()
