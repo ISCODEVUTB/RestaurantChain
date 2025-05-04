@@ -5,7 +5,7 @@ from menu_service.menu import (
     update_product,
     delete_product,
     read_menu,
-    search_product
+    mostrar_menu_desarrollador
 )
 
 class TestMenuFunctions(unittest.TestCase):
@@ -85,6 +85,35 @@ class TestMenuFunctions(unittest.TestCase):
         self.assertIn("Nombre: Pasta Carbonara", output)
         self.assertIn("Precio: 15.99$", output)
         self.assertIn("Disponibilidad: Si", output)
+
+    @patch('builtins.input', side_effect=["6"])  # Simula la opción "6" para salir
+    @patch('builtins.print')
+    def test_mostrar_menu_desarrollador_exit(self, mock_print, mock_input):
+        """Verifica que el menú se muestra y permite salir correctamente."""
+        mostrar_menu_desarrollador()
+        
+        # Capturar la salida de `print()`
+        output = "\n".join([call[0][0] for call in mock_print.call_args_list])
+        self.assertIn("--- Gestion de Menu ---", output)
+        self.assertIn("Salir", output)
+
+    @patch('builtins.input', side_effect=["1", "Ensalada", "Verde", "8.99", "500", "6"])
+    @patch('builtins.print')
+    @patch('menu_service.menu.create_product')
+    def test_mostrar_menu_desarrollador_create_product(self, mock_create_product, mock_print, mock_input):
+        """Verifica que se ejecuta `create_product` cuando el usuario elige la opción."""
+        mostrar_menu_desarrollador()
+        
+        mock_create_product.assert_called_once()  # Se debe haber llamado `create_product`
+
+    @patch('builtins.input', side_effect=["3", "Pizza", "6"])
+    @patch('builtins.print')
+    @patch('menu_service.menu.delete_product')
+    def test_mostrar_menu_desarrollador_delete_product(self, mock_delete_product, mock_print, mock_input):
+        """Verifica que se ejecuta `delete_product` cuando el usuario elige la opción."""
+        mostrar_menu_desarrollador()
+        
+        mock_delete_product.assert_called_once()  # Se debe haber llamado `delete_product`
 
 if __name__ == '__main__':
     unittest.main()
