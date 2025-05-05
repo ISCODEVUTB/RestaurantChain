@@ -47,3 +47,17 @@ async def test_delete_nonexistent_payment_method(mock_db):
     response = client.delete(f"/payment-methods/{ObjectId('000000000000000000000000')}")
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert response.json()["detail"] == "Metodo de pago no encontrado"
+
+@pytest.mark.asyncio
+async def test_update_nonexistent_payment_method(mock_db):
+    """Verifica que la API devuelve 404 al intentar actualizar un método de pago inexistente."""
+    mock_db.update_one.return_value.matched_count = 0
+
+    response = client.put(f"/payment-methods/{ObjectId('999999999999999999999999')}", json={
+        "name": "No existe",
+        "description": "Pago falso",
+        "is_active": False
+    })
+
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+    assert response.json()["detail"] == "Metodo de pago no encontrado"
