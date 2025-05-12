@@ -60,8 +60,8 @@ class TestOrderMenu(unittest.TestCase):
                     }
                     
                     # Simular la variable 'orden' del módulo
-                    if not hasattr(self.order_module, 'orden'):
-                        self.order_module.orden = self.sample_order
+                    if not hasattr(self.order_module, 'orden'): # pragma: no cover
+                        self.order_module.orden = self.sample_order 
                         
         finally:
             # Restaurar sys.modules
@@ -131,5 +131,5 @@ class TestOrderMenu(unittest.TestCase):
         self.mock_client.__getitem__.assert_called_once_with("Restaurant")
         self.mock_db.__getitem__.assert_called_once_with("Orders")
 
-if __name__ == '__main__':
-    unittest.main()
+if __name__ == '__main__': # pragma: no cover
+    unittest.main() 

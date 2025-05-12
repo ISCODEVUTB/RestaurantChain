@@ -115,5 +115,5 @@ class TestMenuFunctions(unittest.TestCase):
         
         mock_delete_product.assert_called_once()  # Se debe haber llamado `delete_product`
 
-if __name__ == '__main__':
-    unittest.main()
+if __name__ == '__main__': # pragma: no cover
+    unittest.main() 
