@@ -1,9 +1,10 @@
 from pymongo import MongoClient
-import os
 
 # Conexión a MongoDB
-MONGODB_URL = os.getenv("MONGODB_URL")
-client = MongoClient(MONGODB_URL)
+client = MongoClient(
+    "mongodb+srv://mareyes:Mateo123@restaurantchaindb.5obzjql.mongodb.net/"
+    "?retryWrites=true&w=majority&appName=RestaurantChainDBy"
+)
 db = client["Restaurant"]
 menu = db["Menu"]
 
