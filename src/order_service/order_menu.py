@@ -1,7 +1,8 @@
 from pymongo import MongoClient
+import os
 
-uri = "mongodb+srv://mareyes:Mateo123@restaurantchaindb.5obzjql.mongodb.net/?retryWrites=true&w=majority&appName=RestaurantChainDBy"
-client = MongoClient(uri)
+MONGODB_URL = os.getenv("MONGODB_URL")
+client = MongoClient(MONGODB_URL)
 db = client["Restaurant"]
 orders = db["Orders"]
 

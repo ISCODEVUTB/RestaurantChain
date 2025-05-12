@@ -8,7 +8,7 @@ from datetime import datetime
 
 app = FastAPI()
 
-MONGODB_URL = "mongodb+srv://mareyes:Mateo123@restaurantchaindb.5obzjql.mongodb.net/?retryWrites=true&w=majority&appName=RestaurantChainDBy"
+MONGODB_URL = os.getenv("MONGODB_URL")
 client = AsyncIOMotorClient(MONGODB_URL)
 db = client["Restaurant"]
 payment_methods = db["payment_methods"]

@@ -30,6 +30,9 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           pip install pytest pytest-cov pymongo fastapi httpx motor
 
+      - name: Set MongoDB environment variable
+        run: echo "MONGODB_URL=${{ secrets.MONGODB_URL }}" >> $GITHUB_ENV  # Agregado aquí    
+
       - name: Run tests with coverage
         env:
           PYTHONPATH: ${{ github.workspace }}

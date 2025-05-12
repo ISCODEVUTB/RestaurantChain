@@ -4,9 +4,11 @@ from typing import List
 from pymongo import MongoClient
 from bson import ObjectId
 from datetime import datetime
+import os
+
 pne= "pedido no encontrado"
-uri = "mongodb+srv://mareyes:Mateo123@restaurantchaindb.5obzjql.mongodb.net/?retryWrites=true&w=majority&appName=RestaurantChainDBy"
-client = MongoClient(uri)
+MONGODB_URL = os.getenv("MONGODB_URL")
+client = MongoClient(MONGODB_URL)
 db = client["Restaurant"]
 orders = db["Orders"]
 
