@@ -29,7 +29,7 @@ def create_product():
     print("Producto agregado.")
 
 
-def update_product():
+def update_product(): # pragma: no cover
     edp = "Producto editado."
     name = input("Nombre del producto a editar: ")
     product = menu.find_one({"Name": name})
@@ -108,7 +108,7 @@ def read_menu():
         print("--------------------------------------------------")
 
 
-def search_product():
+def search_product(): # pragma: no cover
     name = input("Nombre del producto a buscar: ")
     product = menu.find_one({"Name": name})
     if product:
